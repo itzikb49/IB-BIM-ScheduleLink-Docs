@@ -1,0 +1,19 @@
+title: IB-BIM ScheduleLink
+description: Professional Revit Add-in Documentation
+theme: jekyll-theme-cayman
+show_downloads: false
+
+# Navigation
+header_pages:
+  - index.md
+  - UserGuide.md
+  - FAQ.md
+
+# Build settings
+markdown: kramdown
+plugins:
+  - jekyll-relative-links
+  
+relative_links:
+  enabled: true
+  collections: true
