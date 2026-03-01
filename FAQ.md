@@ -21,7 +21,6 @@ title: "ScheduleLink — FAQ"
 - [Sheet Numbers](#sheet-numbers)
 - [Excel Editing](#excel-editing)
 - [Errors and Troubleshooting](#errors-and-troubleshooting)
-- [Performance](#performance)
 - [Data and Privacy](#data-and-privacy)
 
 ---
@@ -104,12 +103,7 @@ Your Excel file contains two or more rows with the same Sheet Number. Since Revi
 
 ### I'm renaming multiple sheets — will it work?
 
-Yes. ScheduleLink uses a **two-pass algorithm**:
-
-1. All Sheet Numbers are set to temporary values (clearing all originals)
-2. All Sheet Numbers are set to their final values from Excel
-
-This prevents "already in use" errors when swapping numbers between sheets.
+Yes. ScheduleLink handles all Sheet Number changes automatically, including swapping numbers between sheets. No conflicts will occur.
 
 ### What if I accidentally create a duplicate Sheet Number?
 
@@ -175,23 +169,6 @@ Warnings (like duplicate Mark values) are informational. The changes were applie
 
 ---
 
-## Performance
-
-### How fast is ScheduleLink?
-
-| Schedule Size | Approximate Time |
-|--------------|-----------------|
-| 10–100 rows | < 1 second |
-| 100–500 rows | 1–3 seconds |
-| 500–1000 rows | 3–10 seconds |
-| 1000+ rows | 10+ seconds |
-
-### Is there a row limit?
-
-No hard limit. ScheduleLink can handle schedules with thousands of rows. Very large schedules take longer but work correctly.
-
----
-
 ## Data and Privacy
 
 ### Does ScheduleLink send data online?
@@ -204,7 +181,7 @@ Your Revit project data **never** leaves your computer.
 
 ### Can ScheduleLink corrupt my Revit file?
 
-No. All changes go through the standard Revit API transaction mechanism. If anything goes wrong, Revit's built-in safety features prevent data corruption. Additionally, you can always **Ctrl+Z** to undo.
+No. All changes go through the standard Revit API transaction mechanism. Everything happens in a **single transaction** — if anything goes wrong, simply press **Ctrl+Z** to undo all changes instantly. No backup is needed before using ScheduleLink.
 
 ---
 

@@ -219,10 +219,9 @@ The Excel file includes professional formatting:
 ### What Happens During Import
 
 1. ScheduleLink reads the Excel file and validates the data
-2. **Sheet Numbers** are processed first using a two-pass algorithm (see [Section 9](#9-sheet-number-handling))
-3. All other parameters are updated row by row
-4. A single Revit transaction is committed
-5. The results dialog shows a complete summary
+2. All parameters are updated element by element
+3. A single Revit transaction is committed
+4. The results dialog shows a complete summary
 
 ### Undo
 
@@ -271,42 +270,30 @@ If errors occurred, they are listed with:
 
 ## 9. Sheet Number Handling
 
-### The Challenge
+### Renaming Sheets
 
-Revit requires every sheet to have a **unique Sheet Number**. When you rename multiple sheets in Excel, the order of changes can create temporary conflicts — Sheet A wants the number that Sheet B currently holds.
-
-### The Solution: Two-Pass Algorithm
-
-ScheduleLink uses a smart two-pass approach:
-
-**Pass 1 — Clear the way**
-All Sheet Numbers in the schedule are set to temporary placeholder values. This frees up all the original values.
-
-**Pass 2 — Apply final values**
-All Sheet Numbers are set to their intended values from the Excel file. Since all original values were cleared, there are no conflicts.
+You can freely rename Sheet Numbers in Excel — including swapping numbers between sheets. ScheduleLink handles all scenarios automatically without conflicts.
 
 ### Duplicate Detection
 
-Before applying changes, ScheduleLink checks the Excel file for duplicate Sheet Numbers:
+ScheduleLink checks for duplicate Sheet Numbers **before** applying changes. If duplicates are found:
 
-- If duplicates are found, **none of the duplicate values are applied**
+- The duplicate values are **not applied**
 - The original Revit values are **restored** for the affected rows
-- A clear error message is shown: `Excel value 'X' is duplicate → kept Revit value 'Y'`
+- A clear error message is shown in the results dialog
 - All non-duplicate changes proceed normally
 
 ### Example
 
-Excel contains:
+If your Excel file contains two rows with the same Sheet Number `ABC-01`:
 
-| Row | Sheet Number (Excel) | Sheet Number (Revit) |
-|-----|---------------------|---------------------|
-| 10 | ABC-01 | ABC-01 |
-| 12 | ABC-01 | ABC-010 |
+| Row | Excel Value | Result |
+|-----|------------|--------|
+| 10 | ABC-01 | ⛔ Not applied — restored to original Revit value |
+| 12 | ABC-01 | ⛔ Not applied — restored to original Revit value |
 
-Row 10 and 12 both have `ABC-01` — this is a duplicate. ScheduleLink will:
-1. Report both rows as failed
-2. Restore `ABC-01` for row 10 and `ABC-010` for row 12
-3. Apply all other changes normally
+> 💡 **Tip:** Use Excel's `COUNTIF` formula to find duplicates before importing:  
+> `=COUNTIF(B:B, B2)` — values greater than 1 indicate duplicates.
 
 ---
 
@@ -405,16 +392,9 @@ Each entry includes timestamp, severity level, category, and message.
 ### After Importing
 - Review the results dialog carefully
 - Open the schedule in Revit to verify changes visually
-- If something went wrong, **Ctrl+Z** immediately
+- If something went wrong, **Ctrl+Z** immediately — all changes are reverted in one step
 
-### Performance Tips
-
-| Schedule Size | Approximate Time |
-|--------------|-----------------|
-| 10–100 rows | < 1 second |
-| 100–500 rows | 1–3 seconds |
-| 500–1000 rows | 3–10 seconds |
-| 1000+ rows | 10+ seconds |
+> 💡 **No backup needed.** Unlike other tools, ScheduleLink uses a single Revit transaction. If anything goes wrong, simply press **Ctrl+Z** to undo all changes instantly. Your project is always safe.
 
 ### Working with Sheet Lists
 - Always check for duplicate Sheet Numbers before importing
